@@ -10,6 +10,7 @@ https://github.com/SkillfactoryCodingTeam/devops__project__automation
 - копируется Makefile в котором описан процесс получения .html файлов и процесс управления docker образамии и контейнером. 
 - копируется Dockerfile в котором описан процесс сборки Docker image с nginx и .html файлами
 - создается задание в /etc/crontab
+- далее cron вызывает make sync && make deploy для получения .html файлов и пересборки контейнера
 
 # Установка
 Установка выполняется на локальный компьютер с помощью Ansible 
@@ -20,8 +21,12 @@ https://github.com/SkillfactoryCodingTeam/devops__project__automation
 
 # Проверка
 Задания можно выполнить вручную:
+
 *make -f /opt/sync-mirror/Makefile sync* получения .html файлов 
 *make -f /opt/sync-mirror/Makefile deploy* для пересборки и запуска контейнера
+
 Для удобства при сборке используется прямой вызов bash, весь вывод должен быть отформатирован правильно
+
 Получить доступ к статьям можно перейдя в браузере по адресу:
+
 *127.0.0.1/bugs.html*
