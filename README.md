@@ -23,10 +23,10 @@ https://github.com/SkillfactoryCodingTeam/devops__project__automation
 Задания можно выполнить вручную:
 
 *make -f /opt/sync-mirror/Makefile sync* получения .html файлов 
+
 *make -f /opt/sync-mirror/Makefile deploy* для пересборки и запуска контейнера
 
 Для удобства при сборке используется прямой вызов bash, весь вывод должен быть отформатирован правильно
-
 Получить доступ к статьям можно перейдя в браузере по адресу:
 
 *127.0.0.1/bugs.html*
