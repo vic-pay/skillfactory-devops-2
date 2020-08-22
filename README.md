@@ -27,6 +27,11 @@ https://github.com/SkillfactoryCodingTeam/devops__project__automation
 *make -f /opt/sync-mirror/Makefile deploy* для пересборки и запуска контейнера
 
 Для удобства при сборке используется прямой вызов bash, весь вывод должен быть отформатирован правильно
+
+Можно сделать синхронизацию отдельного языка, например:
+
+*make -f /opt/sync-mirror/Makefile sync_en*
+
 Получить доступ к статьям можно перейдя в браузере по адресу:
 
 *127.0.0.1/bugs.html*
