@@ -11,6 +11,8 @@ https://github.com/SkillfactoryCodingTeam/devops__project__automation
 target-server по условию не подключен к интернету, поэтому на currnet-server также настраивается apt-cacher, а target-server использует его в качестве apt зеркала
 Для загрузки образа и запуска контейнера докер используется докер клиент с взаимной аутентификацией по сертификату 
 
+![alt text](practicum.png "Схема практикума")
+
 # Установка
 Установка контейнеров, имитирующих сервера выполняется на локальный компьютер с помощью Ansible:
 - установить Ansible командой sudo apt install ansible
