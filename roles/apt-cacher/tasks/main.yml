@@ -1,0 +1,19 @@
+---
+    - name: Installing package
+      apt:
+        name: ['apt-cacher']
+        state: present
+        update_cache: True
+      register: apt_cacher_install
+
+    - name: Coping config
+      template:
+        src: templates/etc/apt-cacher/apt-cacher.conf
+        dest: /etc/apt-cacher/apt-cacher.conf
+      when: apt_cacher_install.changed
+
+    - name: Restarting service
+      service: 
+        name: apt-cacher
+        state: restarted
+      when: apt_cacher_install.changed

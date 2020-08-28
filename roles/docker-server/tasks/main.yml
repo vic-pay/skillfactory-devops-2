@@ -1,0 +1,32 @@
+---
+    - name: Installing package
+      apt:
+        name: ['docker.io']
+        state: present
+
+    - name: Copy server certs
+      copy:
+        src: "files{{ item }}"
+        dest: "{{ item }}"
+        owner: root
+        group: root
+        mode: 0400
+      with_items:
+        - /etc/docker/ca.pem
+        - /etc/docker/server-cert.pem
+        - /etc/docker/server-key.pem
+
+    - name: Copy docker unit
+      copy:
+        src: templates/lib/systemd/system/docker.service
+        dest: /lib/systemd/system/docker.service
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Restarting docker service
+      service: 
+        name: docker
+        state: restarted
+        daemon_reload: True
+

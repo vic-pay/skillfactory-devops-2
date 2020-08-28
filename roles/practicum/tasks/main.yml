@@ -1,0 +1,45 @@
+---
+
+    - name: Installing package
+      apt:
+        name: ['make', 'wget']
+        state: present
+
+    - name: Making {{ practicum_path }} dir
+      file:
+        path: "{{ practicum_path }}"
+        state: directory
+        owner: root
+        group: root
+
+    - name: Making {{ practicum_path }}/html dir
+      file:
+        path: "{{ practicum_path }}/html"
+        state: directory
+        owner: root
+        group: root
+
+    - name: Coping files into {{ practicum_path }} dir
+      template:
+        src: templates/{{ item }}
+        dest: "{{ practicum_path }}/{{ item }}"
+      with_items:
+        - Makefile
+        - Dockerfile
+        - deploy.sh
+
+    - name: Giving permissions
+      file:
+        path: "{{ practicum_path }}/deploy.sh"
+        mode: 0755
+
+    - name: Making cron entry
+      cron:
+        name: "sync-mirror"
+        weekday: "6"
+        minute: "45"
+        hour: "3"
+        user: root
+        job: "make -f {{ practicum_path }}/Makefile sync && make -f {{ practicum_path }}/Makefile deploy"
+        cron_file: /etc/crontab
+        state: present

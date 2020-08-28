@@ -1,0 +1,22 @@
+all:
+  children:
+    servers:
+      hosts:
+        localhost:
+          ansible_connection: local
+
+    lxd_containers:
+      hosts:
+        current-server:
+          ansible_connection: lxd
+          ansible_host: current-server
+          #ansible_host: localhost:current-server
+          ip_address: 10.0.3.10
+        target-server:
+          ansible_connection: lxd
+          ansible_host: target-server
+          #ansible_host: localhost:target-server
+          ip_address: 10.0.3.20
+  vars:
+    practicum_path: /opt/practicum
+    practicum_image: practicum

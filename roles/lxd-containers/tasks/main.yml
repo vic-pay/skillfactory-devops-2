@@ -1,0 +1,41 @@
+---
+    - name: Making lxd profile for containers
+      lxd_profile:
+        name: "{{ hostvars[item].inventory_hostname }}-profile"
+        config: {}
+        description: "{{ hostvars[item].inventory_hostname }}-profile"
+        devices:
+          eth0:
+            ipv4.address: "{{ hostvars[item].ip_address }}"
+            name: eth0
+            nictype: bridged
+            parent: lxdbr0
+            type: nic
+          root:
+            path: /
+            pool: mnt-pool
+            type: disk
+      with_items: "{{ groups['lxd_containers'] }}"
+
+    - name: Making and starting containers
+      lxd_container:
+        name: "{{ hostvars[item].inventory_hostname }}"
+        state: started
+        source:
+          type: image
+          mode: pull
+          server: https://images.linuxcontainers.org
+          protocol: simplestreams 
+          alias: ubuntu/focal/amd64
+        profiles: ["{{ hostvars[item].inventory_hostname }}-profile"]
+        config: { "security.nesting": "true" }
+        wait_for_ipv4_addresses: true
+        timeout: 600
+      with_items: "{{ groups['lxd_containers'] }}"
+
+#- hosts: lxd_containers
+#  tasks:
+#    - command: "ip a"
+#      register: lxd_container_ip
+#    
+#    - debug: var=lxd_container_ip

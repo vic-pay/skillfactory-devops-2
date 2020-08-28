@@ -1,0 +1,13 @@
+---
+    - name: Setting repositories
+      apt_repository:
+        repo: "{{ item.repo }}"
+        state: "{{ item.repo_state }}"
+      loop:
+        - { repo: "deb http://archive.ubuntu.com/ubuntu focal main restricted universe multiverse", repo_state: absent }
+        - { repo: "deb http://archive.ubuntu.com/ubuntu focal-updates main restricted universe multiverse", repo_state: absent }
+        - { repo: "deb http://security.ubuntu.com/ubuntu focal-security main restricted universe multiverse", repo_state: absent }
+        - { repo: "deb http://10.0.3.10:3142/archive.ubuntu.com/ubuntu focal main restricted universe multiverse", repo_state: present }
+        - { repo: "deb http://10.0.3.10:3142/archive.ubuntu.com/ubuntu focal-updates main restricted universe multiverse", repo_state: present }
+        - { repo: "deb http://10.0.3.10:3142/security.ubuntu.com/ubuntu focal-security main restricted universe multiverse", repo_state: present }
+   

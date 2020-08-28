@@ -1,0 +1,67 @@
+---
+    - name: Making /mnt/lxd directory
+      file:
+        path: /mnt/lxd
+        state: directory
+
+    - name: Setting debconf for lxd
+      debconf:
+        name: lxd
+        question: lxd/snap-track
+        value: "4.0"
+        vtype: select
+
+    - name: Installing lxd package
+      apt:
+        name: ['lxd']
+        state: present
+        update_cache: True
+      register: lxd_install
+
+    - name: Creating var with lxd preseed
+      set_fact:
+        lxd_preseed: "{{ lookup('template', 'templates/lxd-server.yml') }}"
+      when: lxd_install.changed
+
+    - name: Init lxd
+      command: lxd init --preseed
+      args:
+        stdin: "{{ lxd_preseed }}"
+      when: lxd_install.changed
+
+    - name: Creating var with lxd pools
+      command: lxc storage list
+      register: lxd_pool_list
+      changed_when: False
+
+    - name: Setting lxd pool
+      command: lxc storage create mnt-pool dir source=/mnt/lxd
+      when: not lxd_pool_list.stdout is search('/mnt/lxd')
+
+
+    - name: Creating var with lxdbr0 network
+      command: lxc network show lxdbr0
+      register: lxdbr0_settings
+      changed_when: False
+
+    - name: Setting lxdbr0
+      command: "{{ item.command }}"
+      when: not lxdbr0_settings.stdout is search( item.setting )
+      loop:
+        - { command: 'lxc network set lxdbr0 ipv4.address=10.0.3.1/24', setting: 'ipv4.address: 10.0.3.1/24'}
+        - { command: 'lxc network set lxdbr0 ipv6.address=none',        setting: 'ipv6.address: none'}
+        - { command: 'lxc network set lxdbr0 ipv4.nat=true',            setting: 'ipv4.nat: "true"'}
+
+    - name: Setting lxdbr0
+      command: "{{ item.command }}"
+      when: lxdbr0_settings.stdout is search( item.setting )
+      loop:
+        - { command: 'lxc network lxdbr0 unset lxdbr0 raw.dnsmasq', setting: 'raw.dnsmasq'}
+        - { command: 'lxc network lxdbr0 unset lxdbr0 dns.mode',    setting: 'dns.mode'}
+
+    - name: Adding local user to lxd group
+      user:
+        name: victor
+        groups: lxd
+        append: yes
+    

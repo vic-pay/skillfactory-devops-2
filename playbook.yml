@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  become: yes
+  become_method: sudo
+  become_user: root
+
+  vars:
+
+  roles:
+    - lxd-server
+    - lxd-containers
+
+- hosts: current-server
+  roles:
+    - apt-cacher
+    - docker-client
+    - practicum
+
+- hosts: target-server
+  roles:
+    - apt-repo
+    - docker-server
